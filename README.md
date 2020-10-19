@@ -55,7 +55,7 @@ Find your user name, and set your password, sshd will need it.
 
 Now you have all info to connect from SSH/SFTP clients to port 8022
 
-`pkg install python
+`pkg install python`
 
 Finally ready to run the tool
 
