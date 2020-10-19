@@ -1,0 +1,49 @@
+#!/bin/bash
+#run this script in termux
+
+if ! ps -aux | grep "[t]ermux" >/dev/null; then
+    echo "This script is only for Termux session"
+    exit 1
+fi
+
+IP=`ifconfig wlan0 | grep -oP 'inet (addr:)?\K([0-9]*\.){3}[0-9]*(?=.*broadcast)'`
+
+# start/restart continous ping to keep WiFi alive
+# pinging own IP does not seem to keep it alive
+# this is a hack but need to get things done, so lets ping the cable modem
+pkill ping
+ping -i 0.3 192.168.100.1 2>&1 >/dev/null &
+
+if pgrep -x "sshd" > /dev/null; then
+    echo "sshd already running"
+else
+
+    # checking for presence of sshd may be pointless as how would this
+    # script get here in the first place
+    if ! apt-cache show openssh 2>&1 >/dev/null
+    then
+        pkg upgrade
+        pkg install openssh
+        echo "\nnow you need to create password for `whoami`"
+        passwd
+    fi
+
+    # checking for presence of sshd may be pointless as how would this
+    # script get here in the first place
+    if ! apt-cache show python 2>&1 >/dev/null
+    then
+        pkg install python
+    fi
+
+    # lets only listen to the wlan0 IP instead of default 0.0.0.0 so this
+    # will not become an open door to my phone by a hacker when I step out
+    # and forget to shutdown termux
+    echo "sshd starting"
+    sshd -o ListenAddress=$IP
+
+    # prevent Android going to deep sleep while Termux session is running
+    termux-wake-lock
+
+fi
+
+echo "connect to $IP as user `whoami`"
