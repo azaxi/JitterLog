@@ -6,10 +6,11 @@ Have problem with VOIP app frequently dropping calls, so I wrote this tool to
 continuously monitor the data connection jitter and dropped packets to multiple
 hosts
 
-The tool is written to be run on multiple devices at the same time and then
-correlate results. To easy correlate, time is synchronized from worldtimeapi.org
-and if measurement falls behind, the empty timestamped lines would be printed at
-the intervals when measurement was not possible.
+The tool is to be run on multiple devices at the same time and then correlate
+results. Output is a log file with comma separated data that can be pasted into
+spreadsheet. For easy correlation, timestamp is synchronized from worldtimeapi.org
+and if measurement falls behind, empty timestamped lines are printed at the intervals
+when measurement was not possible. 
 
 Needs Python 3.6 and higher
 
